@@ -4,6 +4,15 @@ import java.nio.ByteBuffer;
 
 
 public class Parser{
+
+    public static byte[] int2Byte(int value){
+       return ByteBuffer.allocate(Integer.BYTES).putInt(value).array();
+    }
+
+    public static int parseInt(byte[] buf){
+        return ByteBuffer.wrap(buf,0,4).getInt();
+    }
+
     //将字节数组前八个字节 解析成一个long
     public static long parseLong(byte[] buf){
         ByteBuffer buffer = ByteBuffer.wrap(buf,0,8);
