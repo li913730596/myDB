@@ -75,6 +75,7 @@ public class LoggerImpl implements  Logger{
         int xCheckSum = Parser.parseInt(raw.array());
         this.fileSize = length;
         this.xCheckSum = xCheckSum;
+        log.info("{} {}", fileSize, xCheckSum);
 
         checkAndRemoveTail();
     }
@@ -85,9 +86,11 @@ public class LoggerImpl implements  Logger{
         while(true){
             byte[] log = internNext();
             if(log == null) break;
+            System.out.println(xCheck);
             xCheck = Parser.parseInt(calCheckSum(xCheck,log));
         }
 
+        log.info("{}   {}", xCheck, xCheckSum);
         if(xCheck != xCheckSum){
             Panic.panic(new RuntimeException("Bad log file"));
         }
@@ -134,6 +137,7 @@ public class LoggerImpl implements  Logger{
     }
     private void updateCheckSum(byte[] log){
         byte[] checkSum = calCheckSum(this.xCheckSum, log);
+        this.xCheckSum = Parser.parseInt(checkSum);
         ByteBuffer buffer = ByteBuffer.wrap(checkSum);
         try {
             fc.position(0);

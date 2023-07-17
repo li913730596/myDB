@@ -1,5 +1,6 @@
 package com.jarninlee.mydb.dataManager.logger;
 
+import com.jarninlee.mydb.common.Parser;
 import com.jarninlee.mydb.utils.Panic;
 
 import java.io.File;
@@ -38,8 +39,7 @@ public interface Logger {
         } catch (FileNotFoundException e) {
             Panic.panic(e);
         }
-        byte[] a = new byte[]{0};
-        ByteBuffer buffer = ByteBuffer.wrap(a);
+        ByteBuffer buffer = ByteBuffer.wrap(Parser.int2Byte(0));
         try {
             fc.position(0);
             fc.write(buffer);
