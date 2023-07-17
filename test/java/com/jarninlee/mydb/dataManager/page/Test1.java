@@ -1,4 +1,4 @@
-package com.jarninlee.mydb;
+package com.jarninlee.mydb.dataManager.page;
 
 import com.jarninlee.mydb.transactionManager.TransactionManager;
 import lombok.extern.slf4j.Slf4j;
@@ -109,7 +109,7 @@ public class Test1 {
 //import java.util.concurrent.locks.Lock;
 //import java.util.concurrent.locks.ReentrantLock;
 //
-//public class com.jarninlee.mydb.Test1{
+//public class com.jarninlee.mydb.dataManager.page.Test1{
 //    private int transCnt = 0;
 //    private int noWorkers = 50;
 //    private int noWorks = 3000;

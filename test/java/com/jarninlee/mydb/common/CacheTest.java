@@ -1,7 +1,5 @@
 package com.jarninlee.mydb.common;
 
-import com.jarninlee.mydb.common.AbstractCache;
-import com.jarninlee.mydb.common.MockCache;
 import com.jarninlee.mydb.utils.Panic;
 import org.junit.Test;
 

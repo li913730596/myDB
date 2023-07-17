@@ -77,6 +77,7 @@ public abstract class AbstractCache<T> {
             count--;
             getting.remove(key);
             lock.unlock();
+            log.info("该页不存在");
             Panic.panic(e);
         }
 
