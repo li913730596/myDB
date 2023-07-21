@@ -23,4 +23,14 @@ public class Parser{
     public static byte[] long2byte(long value){
         return ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(value).array();
     }
+
+    //byte -> short
+    public static short parseShort(byte[] buf){
+        return ByteBuffer.wrap(buf, 0, 2).getShort();
+    }
+
+    //short -》 byte[]
+    public static byte[] short2Byte(short value){
+        return ByteBuffer.allocate(Short.SIZE / Byte.SIZE).putShort(value).array();
+    }
 }

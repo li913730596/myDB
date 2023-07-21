@@ -5,8 +5,6 @@ import com.jarninlee.mydb.dataManager.page.Page;
 import com.jarninlee.mydb.dataManager.page.PageImpl;
 import com.jarninlee.mydb.utils.Panic;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -22,7 +20,6 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
     private RandomAccessFile file;
     private FileChannel fc;
     private Lock fileLock;
-
     private AtomicInteger pageNumbers;
 
     public PageCacheImpl(int maxResource, RandomAccessFile file, FileChannel fc) {
