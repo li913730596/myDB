@@ -37,7 +37,7 @@ public class PageCommon {
     }
 
     //将raw插入page,返回插入位置
-    public short insert(Page pg, int[] raw){
+    public static short insert(Page pg, int[] raw){
         pg.setDirty(true);
         short offset = getFSO(pg);
         System.arraycopy(raw,0,pg.getData(),offset,raw.length);
@@ -51,7 +51,7 @@ public class PageCommon {
     }
 
     //将raw插入pg中的offset位置，并将pg的offset设置为较大的offset  （直接修改前两个字节的offset字段）
-    public void recoverInsert(Page pg, byte[] raw, short offset){
+    public static void recoverInsert(Page pg, byte[] raw, short offset){
         pg.setDirty(true);
         System.arraycopy(raw,0,pg.getData(),offset,raw.length);
         short of = getFSO(pg);
@@ -61,7 +61,7 @@ public class PageCommon {
     }
 
     // 将raw插入pg中的offset位置，不更新update   更新数据长度没变  所以不用setFSO更新空闲偏移量
-    public void recoverUpdate(Page pg, byte[] raw, short offset){
+    public static void recoverUpdate(Page pg, byte[] raw, short offset){
         pg.setDirty(true);
         System.arraycopy(raw,0,pg.getData(),offset,raw.length);
     }

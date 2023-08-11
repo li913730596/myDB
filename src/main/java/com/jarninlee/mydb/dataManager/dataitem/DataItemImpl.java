@@ -20,6 +20,7 @@ public class DataItemImpl implements DataItem{
     static final int OF_SIZE = OF_VALID + 1;
     static final int OF_DATA = OF_SIZE + 2;
 
+    //DataItem的整体就在subArray中的raw存储
     private SubArray subArray;
     private byte[] oldRaw;
     private Lock rLock;
@@ -40,27 +41,31 @@ public class DataItemImpl implements DataItem{
     }
 
     public boolean isValid(){
-        return subArray.raw[subArray.start + OF_VALID] == (byte) 0; // ? whats mean
+        return subArray.raw[subArray.start + OF_VALID] == (byte) 0; // dataitem中的raw里面的valid字段 == 0
     }
 
+    //dataItem中的raw中的字段  偏移量为3
     @Override
     public SubArray data() {
         return new SubArray(subArray.raw, subArray.start + OF_DATA, subArray.end);
     }
 
+    //操作dataItem之前必须先将raw存入OldRaw中进行备份
     @Override
     public void before() {
         wLock.lock();
         page.setDirty(true);
-        System.arraycopy(subArray.raw,subArray.start,oldRaw,0,oldRaw.length);
+        System.arraycopy(subArray.raw, subArray.start, oldRaw,0,oldRaw.length); //TODO:为何是oldRaw.length
     }
 
+    //撤销修改之前需要将oldRaw先存回去
     @Override
     public void unBefore() {
         System.arraycopy(oldRaw,0,subArray.raw,subArray.start,oldRaw.length);
         wLock.unlock();
     }
 
+    //修改完之后调用after  将修改操作记录成日志
     @Override
     public void after(long xid) {
         dataManager.logDataItem(xid, this);
@@ -90,5 +95,25 @@ public class DataItemImpl implements DataItem{
     @Override
     public void rUnLock() {
         rLock.unlock();
+    }
+
+    @Override
+    public Page page() {
+        return page;
+    }
+
+    @Override
+    public long getUid() {
+        return uid;
+    }
+
+    @Override
+    public byte[] getOldRaw() {
+        return oldRaw;
+    }
+
+    @Override
+    public SubArray getRaw() {
+        return subArray;
     }
 }

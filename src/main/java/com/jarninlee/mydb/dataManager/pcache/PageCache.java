@@ -21,8 +21,8 @@ public interface PageCache{
     void flushPage(Page pg);
 
     public static PageCacheImpl create(String path, long memory) {
-        System.out.println(path);
-        File f = new File(path);
+        System.out.println(path );
+        File f = new File(path + PageCacheImpl.DB_SUFFIX);
         if (f.exists()) {
             Panic.panic(new RuntimeException("file already exists1"));
         }
@@ -49,7 +49,7 @@ public interface PageCache{
     }
 
     public static PageCacheImpl open(String path, long memory){
-        File f = new File(path);
+        File f = new File(path + PageCacheImpl.DB_SUFFIX);
         if(!f.exists()){
             Panic.panic(new RuntimeException("file not exists!"));
         }

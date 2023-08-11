@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.RandomAccess;
@@ -25,7 +26,8 @@ public class TransactionManager {
     private static final byte FIELD_TRAN_ABORTED = 2;
 
     //超级事务，永远为commited状态
-    private static final long SUPER_XID = 0;
+    public static final long SUPER_XID = 0;
+    public static final String XID_SUFFIX = ".xid";
 
     private RandomAccessFile file;
     private FileChannel fc;
@@ -42,7 +44,7 @@ public class TransactionManager {
     }
 
     public static TransactionManager create(String path){
-        File f = new File(path);
+        File f = new File(path + XID_SUFFIX);
         try {
             if(!f.createNewFile()){
                 Panic.panic(new RuntimeException("file already exists!"));
@@ -76,6 +78,31 @@ public class TransactionManager {
         }
 
         return new TransactionManager(randomAccessFile,fc);
+    }
+
+    public static TransactionManager open(String path){
+        File file = new File(path + XID_SUFFIX);
+
+        if(!file.exists()){
+            Panic.panic(new RuntimeException("file not exists"));
+        }
+
+        if(!file.canRead() || !file.canWrite()){
+            Panic.panic(new RuntimeException("file can not read or write"));
+        }
+
+        FileChannel fc = null;
+        RandomAccessFile randomAccessFile = null;
+
+        try {
+            randomAccessFile = new RandomAccessFile(file,"rw");
+            fc = randomAccessFile.getChannel();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new TransactionManager(randomAccessFile,fc);
+
     }
 
     /**
