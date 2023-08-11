@@ -2,8 +2,11 @@ package com.jarninlee.mydb.dataManager.page;
 
 import com.jarninlee.mydb.transactionManager.TransactionManager;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +28,15 @@ public class Test1 {
 
     @Test
     public void testMutilThread(){
-        String path = "C:\\Users\\JarNinLee\\Desktop\\Java\\myDB\\src\\main\\resources\\tranmger_test.xid";
+        String path = "src/main/resources/tranmger_test.xid";
+        Path path1 = Path.of(path);
+        if(Files.exists(path1)){
+            try {
+                Files.delete(path1);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         transactionManager = TransactionManager.create(path);
         cdl = new CountDownLatch(noWorkers);
         TranMap = new ConcurrentHashMap<Long, Byte>();
@@ -50,7 +61,7 @@ public class Test1 {
 //            log.info("{}   {}  {}",Thread.currentThread(),i,op);
             if(op == 0){
                 lock.lock();
-                log.info("{}",Thread.currentThread());
+//                log.info("{}",Thread.currentThread());
                 if(inTrans == false){
                     long xid = transactionManager.begin();
                     TranMap.put(xid, (byte) 0);
@@ -59,7 +70,7 @@ public class Test1 {
                     inTrans = true;
                 }else{
                     int status = (new Random(System.nanoTime()).nextInt(Integer.MAX_VALUE % 2)) + 1;
-
+//                    log.info("{}",status);
                     switch (status){
                         case 1:
                             transactionManager.commit(transXID);

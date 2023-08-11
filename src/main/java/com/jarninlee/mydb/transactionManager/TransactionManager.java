@@ -153,6 +153,7 @@ public class TransactionManager {
     }
 
     public void abort(long xid){
+        System.out.println("abort");
         long position = getXidPosition(xid);
 
         ByteBuffer buffer = ByteBuffer.wrap(new byte[]{FIELD_TRAN_ABORTED});

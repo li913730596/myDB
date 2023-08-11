@@ -16,11 +16,11 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public class PageCacheTest {
 
-    String p = "C:\\Users\\JarNinLee\\Desktop\\Java\\myDB\\src\\main\\resources";
+    String p = "src/main/resources";
 
     @Test
     public void testPageCache() throws Exception {
-        PageCache pc = PageCache.create(p + "\\pcacher_simple_test0.db", PageCache.PAGE_SIZE * 50);
+        PageCache pc = PageCache.create(p + "/pcacher_simple_test0.db", PageCache.PAGE_SIZE * 50);
         for (int i = 0; i < 100; i++) {
             byte[] tmp = new byte[PageCache.PAGE_SIZE];
             tmp[0] = (byte) i;
@@ -31,7 +31,7 @@ public class PageCacheTest {
         }
         pc.close();
 
-        pc = PageCache.open(p + "\\pcacher_simple_test0.db", PageCache.PAGE_SIZE * 50);
+        pc = PageCache.open(p + "/pcacher_simple_test0.db", PageCache.PAGE_SIZE * 50);
         for (int i = 1; i <= 100; i++) {
             Page pg = pc.getPage(i);
             assert pg.getData()[0] == (byte) i - 1;
@@ -39,7 +39,7 @@ public class PageCacheTest {
         }
         pc.close();
 
-        assert new File(p + "\\pcacher_simple_test0.db").delete();
+        assert new File(p + "/pcacher_simple_test0.db").delete();
     }
 
     private PageCache pc1;
@@ -48,7 +48,7 @@ public class PageCacheTest {
 
     @Test
     public void testPageCacheMultiSimple() {
-        pc1 = PageCache.create(p + "\\pcacher_simple_test0.db", PageCache.PAGE_SIZE * 50);
+        pc1 = PageCache.create(p + "/pcacher_simple_test0.db", PageCache.PAGE_SIZE * 50);
         cdl1 = new CountDownLatch(20);
         noPages1 = new AtomicInteger(0);
         for (int i = 0; i < 20; i++) {
@@ -61,7 +61,7 @@ public class PageCacheTest {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        File file = new File(p + "\\pcacher_simple_test0.db");
+        File file = new File(p + "/pcacher_simple_test0.db");
 //        if (file.canWrite() && file.canExecute()) System.out.println("YES");
         //TODO 这里无法删除，很有可能是有其他进程访问了文件
         assert file.delete();
@@ -108,7 +108,7 @@ public class PageCacheTest {
 
     @Test
     public void testPageCacheMulti() throws InterruptedException {
-        pc2 = PageCache.create(p + "\\pcacher_simple_test0.db", PageCache.PAGE_SIZE * 10);
+        pc2 = PageCache.create(p + "/pcacher_simple_test0.db", PageCache.PAGE_SIZE * 10);
         mpc = new MockPageCache();
         lockNew = new ReentrantLock();
 
@@ -122,7 +122,7 @@ public class PageCacheTest {
         }
         cdl2.await();
 
-        assert new File(p + "\\pcacher_simple_test0.db").delete();
+        assert new File(p + "/pcacher_simple_test0.db").delete();
     }
 
     private void worker2(int id) {

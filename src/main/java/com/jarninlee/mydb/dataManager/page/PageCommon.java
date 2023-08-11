@@ -41,7 +41,7 @@ public class PageCommon {
         pg.setDirty(true);
         short offset = getFSO(pg);
         System.arraycopy(raw,0,pg.getData(),offset,raw.length);
-        setFSO(pg.getData(), (short) (offset + OF_DATA)); //java中  两个short加起来  会转化为int
+        setFSO(pg.getData(), (short) (offset + raw.length)); //java中  两个short加起来  会转化为int
         return offset;
     }
 
@@ -60,7 +60,7 @@ public class PageCommon {
         }
     }
 
-    // 将raw插入pg中的offset位置，不更新update
+    // 将raw插入pg中的offset位置，不更新update   更新数据长度没变  所以不用setFSO更新空闲偏移量
     public void recoverUpdate(Page pg, byte[] raw, short offset){
         pg.setDirty(true);
         System.arraycopy(raw,0,pg.getData(),offset,raw.length);

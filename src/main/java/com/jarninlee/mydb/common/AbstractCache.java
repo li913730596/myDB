@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public abstract class AbstractCache<T> {
     private HashMap<Long, T> cache;         //实际缓存的数据
-    private HashMap<Long, Boolean> getting; // 正在获取某资源的线程
+    private HashMap<Long, Boolean> getting; // 正在获取某资源的线程 
     private HashMap<Long, Integer> references;         //资源的引用个数
 
     private int maxResource;                //缓存的最大缓存容量
