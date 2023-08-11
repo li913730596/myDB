@@ -64,6 +64,6 @@ public class DataManagerImpl extends AbstractCache<DataItem> implements DataMana
     }
 
     public boolean logCheckPageOne(){
-
+        return true;
     }
 }
