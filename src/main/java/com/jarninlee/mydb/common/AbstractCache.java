@@ -30,7 +30,7 @@ public abstract class AbstractCache<T> {
         references = new HashMap<>();
     }
 
-    public T get(long key) {
+    public T get(long key) throws Exception{
         while (true) {
             lock.lock();
             //是否有其他线程正在获取资源

@@ -81,8 +81,13 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
     }
 
     @Override
-    public Page getPage(int pgno) {
-        Page page = get(pgno);
+    public Page getPage(int pgno) throws Exception {
+        Page page = null;
+        try {
+            page = get(pgno);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return page;
     }
 

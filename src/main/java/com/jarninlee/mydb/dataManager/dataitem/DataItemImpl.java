@@ -55,7 +55,7 @@ public class DataItemImpl implements DataItem{
     public void before() {
         wLock.lock();
         page.setDirty(true);
-        System.arraycopy(subArray.raw, subArray.start, oldRaw,0,oldRaw.length); //TODO:为何是oldRaw.length
+        System.arraycopy(subArray.raw, subArray.start, oldRaw,0,oldRaw.length); //TODO:为何是oldRaw.length   因为oldRaw.length == start -> end
     }
 
     //撤销修改之前需要将oldRaw先存回去

@@ -9,6 +9,7 @@ import com.jarninlee.mydb.dataManager.page.Page;
 import com.jarninlee.mydb.dataManager.page.PageCommon;
 import com.jarninlee.mydb.dataManager.pcache.PageCache;
 import com.jarninlee.mydb.transactionManager.TransactionManager;
+import com.jarninlee.mydb.transactionManager.TransactionManagerImpl;
 
 import java.util.*;
 
@@ -54,8 +55,8 @@ public class Recover {
                 maxPgno = pgno;
             }
         }
-        if(maxPgno == 0){
-            maxPgno = 1; //TODO 为什么要等于一， 此时应当没有日志才对
+        if(maxPgno == 0){   //说明日志文件为空
+            maxPgno = 1; //TODO 为什么要等于一， 此时应当没有日志才对   因为页号从一开始
         }
         pageCache.truncateByPgno(maxPgno);
         System.out.println("Truncate to " + maxPgno + " Pages.");
@@ -90,7 +91,7 @@ public class Recover {
         }
     }
 
-    private static void undoTranscations(TransactionManager transactionManager, Logger logger,PageCache pageCache){
+    private static void undoTranscations(TransactionManager transactionManager, Logger logger, PageCache pageCache){
         Map<Long, List<byte[]>> logCache = new HashMap<>();
         while(true){
             byte[] log = logger.next();
@@ -184,7 +185,12 @@ public class Recover {
             raw = updateLog.oldRaw;
         }
 
-        Page pg = pc.getPage(pgno);
+        Page pg = null;
+        try {
+            pg = pc.getPage(pgno);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             PageCommon.recoverUpdate(pg,raw,offset);
@@ -219,7 +225,12 @@ public class Recover {
 
     public static void doInsertLog(PageCache pc, byte[] log, int flag){
         InsertLogInfo insertLogInfo = parseInsertLog(log);
-        Page page = pc.getPage(insertLogInfo.pgno);
+        Page page = null;
+        try {
+            page = pc.getPage(insertLogInfo.pgno);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             if(flag == UNDO){

@@ -16,7 +16,7 @@ public class PageCommon {
 
     private static final short OF_FREE = 0;
     private static final short OF_DATA = 2;
-    private static final int MAX_FREE_SPACE = PageCache.PAGE_SIZE - OF_DATA;
+    public static final int MAX_FREE_SPACE = PageCache.PAGE_SIZE - OF_DATA;
 
     public static byte[] initRaw(){
         byte[] raw = new byte[PageCache.PAGE_SIZE];
@@ -37,7 +37,7 @@ public class PageCommon {
     }
 
     //将raw插入page,返回插入位置
-    public static short insert(Page pg, int[] raw){
+    public static short insert(Page pg, byte[] raw){
         pg.setDirty(true);
         short offset = getFSO(pg);
         System.arraycopy(raw,0,pg.getData(),offset,raw.length);
