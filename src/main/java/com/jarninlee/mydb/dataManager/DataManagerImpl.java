@@ -44,6 +44,7 @@ public class DataManagerImpl extends AbstractCache<DataItem> implements DataMana
         return dataItem;
     }
 
+    //返回值为：pageNum << 32 | offset
     @Override
     public long insert(long xid, byte[] data)  throws Exception{
         byte[] raw = DataItem.wrapDataItemRaw(data);
@@ -54,12 +55,13 @@ public class DataManagerImpl extends AbstractCache<DataItem> implements DataMana
         PageInfo pageInfo = null;
 
         for (int i = 0; i < 5; i++) {
-            pageInfo = pageIndex.select(raw.length);
+            pageInfo = pageIndex.select(raw.length); // 需要页面的空闲长度至少为raw.length
             if(pageInfo != null){
                 break;
             }else {
-                int newPage = pageCache.newPage(raw);
-                pageIndex.add(newPage,PageCommon.MAX_FREE_SPACE);
+                //如果pageIndex中没有缓存合适的页面，那就新建 空闲页面 并添加至索引缓存中
+                int newPageNum = pageCache.newPage(PageCommon.initRaw());
+                pageIndex.add(newPageNum,PageCommon.MAX_FREE_SPACE);
             }
         }
 
@@ -76,18 +78,21 @@ public class DataManagerImpl extends AbstractCache<DataItem> implements DataMana
             } catch (Exception e) {
                 throw e;
             }
+            //先落日志  在进行磁盘操作（写入操作在 release()中）
             byte[] log = Recover.insertLog(xid, page, raw);
             logger.log(log);
 
             short offset = PageCommon.insert(page, raw);
 
+            //这里进行 磁盘真正写入
             page.release();
             return Types.addressToUid(pageInfo.pgno, offset);
         } finally {
+            //最后将页面在存入pageIndex缓存  这样实现了 单独写（取页面直接 再缓存中删除页面  处理完在根据剩余空闲容量回填入缓存）
             if(page != null){
                 pageIndex.add(pageInfo.pgno, PageCommon.getFreeSpace(page));
             }else {
-                pageIndex.add(pageInfo.pgno,freeSpace);
+                pageIndex.add(pageInfo.pgno,freeSpace); //TODO  什么含义
             }
         }
     }
