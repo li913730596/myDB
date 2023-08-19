@@ -1,6 +1,7 @@
 package com.jarninlee.mydb.dataManager.page;
 
 import com.jarninlee.mydb.transactionManager.TransactionManager;
+import com.jarninlee.mydb.transactionManager.TransactionManagerImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
@@ -21,7 +22,7 @@ public class Test1 {
     int noWorkers = 50;
     int tranCount = 0;
     Lock lock = new ReentrantLock();
-    TransactionManager transactionManager;
+    TransactionManagerImpl transactionManager;
     Map<Long, Byte> TranMap;
     CountDownLatch cdl;
     AtomicInteger cnt = new AtomicInteger(1);
@@ -94,10 +95,10 @@ public class Test1 {
                             ok = transactionManager.isActive(xid);
                             break;
                         case 1:
-                            ok = transactionManager.isCommited(xid);
+                            ok = transactionManager.isCommitted(xid);
                             break;
                         case 2:
-                            ok = transactionManager.isAbort(xid);
+                            ok = transactionManager.isAborted(xid);
                             break;
                     }
                     assert ok;

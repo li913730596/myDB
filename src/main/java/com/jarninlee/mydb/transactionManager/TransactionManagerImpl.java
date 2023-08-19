@@ -133,7 +133,7 @@ public class TransactionManagerImpl implements TransactionManager {
     }
 
     @Override
-    public boolean isCommited(long xid) {
+    public boolean isCommitted(long xid) {
         if (xid == SUPER_XID) return true;
         return checkXID(xid, FIELD_TRAN_COMMITTED);
     }
@@ -145,7 +145,7 @@ public class TransactionManagerImpl implements TransactionManager {
     }
 
     @Override
-    public boolean isAbort(long xid) {
+    public boolean isAborted(long xid) {
         if (xid == SUPER_XID) return false;
         return checkXID(xid, FIELD_TRAN_ABORTED);
     }
